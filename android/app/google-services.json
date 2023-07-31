@@ -1,0 +1,83 @@
+{
+  "project_info": {
+    "project_number": "15730194303",
+    "firebase_url": "https://fongolacar-default-rtdb.firebaseio.com",
+    "project_id": "fongolacar",
+    "storage_bucket": "fongolacar.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:15730194303:android:90d79e73b9b1335c7b8c4a",
+        "android_client_info": {
+          "package_name": "com.example.fongolacar"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "15730194303-qb26eja1f0gvai4upcdr2fik94pu62k4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCw8xFhS8fn2xtOfiqiJBKOeFZisl8AAek"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "15730194303-qb26eja1f0gvai4upcdr2fik94pu62k4.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "15730194303-n958ee5cb5mv6rlnschrkub4isnu0ovr.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.fongolacar"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:15730194303:android:30025995084105317b8c4a",
+        "android_client_info": {
+          "package_name": "com.example.test_applis"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "15730194303-qb26eja1f0gvai4upcdr2fik94pu62k4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCw8xFhS8fn2xtOfiqiJBKOeFZisl8AAek"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "15730194303-qb26eja1f0gvai4upcdr2fik94pu62k4.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "15730194303-n958ee5cb5mv6rlnschrkub4isnu0ovr.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.fongolacar"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
