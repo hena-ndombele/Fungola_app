@@ -4,7 +4,7 @@ import 'package:fungola_app/Pages/ComptePage/AuthentificationPage.dart';
 import 'package:fungola_app/Pages/Page/MapsPage.dart';
 import 'package:fungola_app/utils/ColorPage.dart';
 
-class BienvenuePage extends StatelessWidget {
+class ProfilPage extends StatelessWidget {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   @override

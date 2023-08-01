@@ -19,7 +19,7 @@ class _CreerComptePageState extends State<CreerComptePage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _nameController = TextEditingController();
-  final _phoneController = TextEditingController(text: "R.D. Congo");
+  final _phoneController = TextEditingController();
 
 
   FirebaseAuth _auth = FirebaseAuth.instance;

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fungola_app/Pages/Page/AjouterVehiculePage.dart';
 import 'package:fungola_app/utils/ColorPage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -55,12 +56,14 @@ class _ClePageState extends State<ClePage> {
                 )),
             child: Container(
               padding: EdgeInsets.only(top: 60, left: 20),
-              color: Utils.COLOR_NOIR.withOpacity(.88),
+              color: Utils.COLOR_NOIR.withOpacity(.90),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+
                   Column(
                     children: [
+
                       RichText(
                         text: TextSpan(
                           text: "",
@@ -114,6 +117,23 @@ class _ClePageState extends State<ClePage> {
             ),
           ),
           Positioned(
+
+              bottom: 200,
+              child: Container(
+                margin: EdgeInsets.all(25),
+                width: 300,
+                height: 70,
+                child: ElevatedButton(
+            onPressed: (){
+              Navigator.push(context, MaterialPageRoute(builder: (context)=>AjouterVehiculePage()));
+            },
+            child: Text("Ajouter un véhicule",style: TextStyle(fontFamily: 'Schyler',fontSize: 19),),
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: Utils.COLOR_GREEN
+                  ),
+          ),
+              )),
+          Positioned(
             bottom: 50,
             left: 30,
             right: 30,
@@ -157,6 +177,7 @@ class _ClePageState extends State<ClePage> {
               ],
             ),
           ),
+
         ],
       ),
     );

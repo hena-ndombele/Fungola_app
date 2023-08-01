@@ -36,7 +36,7 @@ class _IntroScreenState extends State<IntroScreen> {
                   ),
                 ),
                 body:
-                "Connectez-vous pour voir en temps réel la position exact de votre véhicule.",
+                "Connectez-vous pour voir en temps réel la position de votre véhicule.",
               image:SizedBox(height: 170,width: 270,child: Lottie.asset("images/animation_lkqfdai8.json"),),),
             PageViewModel(
                 titleWidget: const Text(

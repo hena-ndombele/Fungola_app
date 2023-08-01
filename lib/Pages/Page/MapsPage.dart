@@ -1,27 +1,34 @@
 import 'dart:convert';
+import 'dart:typed_data';
+import 'dart:async';
+import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:fungola_app/Pages/Page/ClePage.dart';
+import 'package:fungola_app/Pages/Page/ProfilPage.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:fungola_app/utils/ColorPage.dart';
 
 class MapsPage extends StatefulWidget {
   // TODO: Add constructor?
   @override
-  _MasPageState createState() => _MasPageState();
+  _MapsPageState createState() => _MapsPageState();
 }
 
-class _MasPageState extends State<MapsPage> {
+class _MapsPageState extends State<MapsPage> {
   late GoogleMapController _mapController;
   List<LatLng> _locations = [];
-  List<Marker> _markers = [];
-  Set<Polyline> _polylines = {};
+  Set<Marker> _markers = {};
+  late BitmapDescriptor _dotIcon;
+  late Polyline _polyline;
 
   @override
   void initState() {
     super.initState();
     _loadMarkersFromFirebase();
     _setupDbListeners();
+    _createDotIcon();
+    _setPolyline();
   }
 
   @override
@@ -29,60 +36,66 @@ class _MasPageState extends State<MapsPage> {
     super.dispose();
   }
 
+  Future<void> _createDotIcon() async {
+    final Size canvasSize =
+        Size(20, 20); // Adjust the size of the dot icon here
 
+    final ui.PictureRecorder pictureRecorder = ui.PictureRecorder();
+    final Canvas canvas = Canvas(pictureRecorder);
+
+    // Draw a purple dot on the canvas with opacity
+    final Paint dotPaint = Paint()
+      ..color = Colors.purple
+          .withOpacity(0.6) // Customize the color and opacity of the dot here
+      ..style = PaintingStyle.fill
+      ..isAntiAlias = true;
+
+    final double dotRadius = canvasSize.width / 2;
+    final Offset center = Offset(canvasSize.width / 2, canvasSize.height / 2);
+    canvas.drawCircle(center, dotRadius, dotPaint);
+
+    final ui.Image image = await pictureRecorder.endRecording().toImage(
+          canvasSize.width.toInt(),
+          canvasSize.height.toInt(),
+        );
+    final ByteData? byteData =
+        await image.toByteData(format: ui.ImageByteFormat.png);
+    final Uint8List pngBytes = byteData!.buffer.asUint8List();
+
+    setState(() {
+      _dotIcon = BitmapDescriptor.fromBytes(pngBytes);
+    });
+  }
 
   void _loadMarkersFromFirebase() async {
     final dbRef = FirebaseDatabase.instance
         .ref()
         .child('kits/kit1/locations')
-        .limitToLast(10);
+        .limitToLast(200);
+    // TODO: Only get the last 10 or 20 location
     final snapshot = await dbRef.get();
 
     if (snapshot.exists) {
       Map<dynamic, dynamic> _json = snapshot.value as Map<dynamic, dynamic>;
-      int delay = 0; // Set initial delay to 0
+      _json.forEach((key, data) {
+        final String positionId = key;
+        final double lat = data['Lat'];
+        final double lng = data['Long'];
 
-      for (var entry in _json.entries) {
-        final String positionId = entry.key;
-        final double lat = entry.value['Lat'];
-        final double lng = entry.value['Long'];
-        final LatLng location = LatLng(lat, lng);
-
-        // Schedule the marker to be added with a delay
-        Future.delayed(Duration(minutes: delay), () {
-          setState(() {
-            _locations.add(location);
-            _markers.add(Marker(
-              markerId: MarkerId(positionId),
-              position: location,
-            ));
-
-            // Check if there are at least two locations
-            if (_locations.length > 1) {
-              // Add a polyline to connect the last two locations
-              Polyline polyline = Polyline(
-                polylineId: PolylineId('route'),
-                points: _locations.sublist(_locations.length - 2),
-                color: Utils.COLOR_VIOLET,
-                width: 3,
-              );
-              _polylines.add(polyline);
-            }
-          });
+        setState(() {
+          _locations.add(LatLng(lat, lng));
         });
+      });
 
-        delay += 2; // Increment the delay by 5 minutes
-      }
-
-      // Center the camera on the last marker position
-      _mapController.animateCamera(CameraUpdate.newLatLng(_locations.last));
+      _updateMapMarkers();
     }
   }
+
   void _setupDbListeners() async {
     final dbRef = FirebaseDatabase.instance.ref('kits/kit1/current');
     await dbRef.onValue.listen((event) {
       Map<dynamic, dynamic> _json =
-      event.snapshot.value as Map<dynamic, dynamic>;
+          event.snapshot.value as Map<dynamic, dynamic>;
       final String positionId = event.snapshot.key as String;
       final double lat = _json['Lat'];
       final double lng = _json['Long'];
@@ -98,54 +111,35 @@ class _MasPageState extends State<MapsPage> {
       });
 
       _updateMapMarkers();
+      _setPolyline();
     });
   }
-  void _updateMapMarkers() async {
-    final dbRef = FirebaseDatabase.instance
-        .ref()
-        .child('kits/kit1/locations')
-        .limitToLast(10);
-    final snapshot = await dbRef.get();
 
-    if (snapshot.exists) {
-      Map<dynamic, dynamic> _json = snapshot.value as Map<dynamic, dynamic>;
-      int delay = 0; // Set initial delay to 0
-      for (var entry in _json.entries) {
-        final String positionId = entry.key;
-        final double lat = entry.value['Lat'];
-        final double lng = entry.value['Long'];
-        final LatLng location = LatLng(lat, lng);
+  void _updateMapMarkers() {
+    setState(() {
+      _markers.clear();
+      _markers.add(Marker(
+        markerId: MarkerId('last'),
+        position: _locations.last,
+        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueViolet),
+      ));
 
-        // Schedule the marker to be added with a delay
-        Future.delayed(Duration(minutes: delay), () {
-          setState(() {
-            _locations.add(location);
-            _markers.add(Marker(
-              markerId: MarkerId(positionId),
-              position: location,
-            ));
-          });
-        });
-        if (_locations.length > 1) {
-          Polyline polyline = Polyline(
-            polylineId: PolylineId('route'),
-            points: _locations,
-            color: Utils.COLOR_VIOLET, // Set the color of the polyline
-            width: 3, // Set the width of the polyline
-          );
-
-          _polylines.clear();
-          _polylines.add(polyline);
-        }
-
-        delay += 5; // Increment the delay by 5 minutes
-      }
-
-      // Center the camera on the last marker position
-      _mapController.animateCamera(CameraUpdate.newLatLng(_locations.last));
-    }
+      // Update Camera Position
+      _mapController.moveCamera(CameraUpdate.newCameraPosition(CameraPosition(
+        target: _locations[_locations.length - 1],
+        zoom: 18.0,
+      )));
+    });
   }
 
+  void _setPolyline() {
+    _polyline = Polyline(
+      polylineId: PolylineId("polyline_1"),
+      points: _locations,
+      color: Colors.purple,
+      width: 4,
+    );
+  }
 
   List<LatLng> getMarkerPositions() {
     return _locations;
@@ -153,69 +147,70 @@ class _MasPageState extends State<MapsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        body: Stack(
-            children: [
-              GoogleMap(
-                onMapCreated: (GoogleMapController controller) {
-                  _mapController = controller;
-                },
-                initialCameraPosition: CameraPosition(
-                  target: LatLng(-4.3032527, 15.310528),
-                  // Set the initial map position
-                  zoom: 12.0, // Set the initial zoom level
+    return Stack(
+      children: [
+        GoogleMap(
+          onMapCreated: (GoogleMapController controller) {
+            _mapController = controller;
+          },
+          initialCameraPosition: CameraPosition(
+            target: LatLng(-4.3032527, 15.310528),
+            // Set the initial map position
+            zoom: 18.0, // Set the initial zoom level
+          ),
+          markers: _markers,
+          polylines: Set<Polyline>.of([_polyline]),
+        ),
+        Positioned(
+          top: 66.0,
+          right: 16.0,
+          child: FloatingActionButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ProfilPage()),
+              );
+            },
+            child: Icon(Icons.person),
+            backgroundColor: Utils.COLOR_VIOLET,
+          ),
+        ),
+        Positioned(
+          top: 136.0,
+          right: 16.0,
+          child: FloatingActionButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ClePage()),
+              );
+            },
+            child: Icon(Icons.key),
+            backgroundColor: Utils.COLOR_NOIR,
+          ),
+        ),
+        Positioned(
+          top: 206.0,
+          right: 16.0,
+          child: FloatingActionButton(
+            onPressed: () {
+              List<LatLng> positions = getMarkerPositions();
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      MarkerPositionPage(positions: positions),
                 ),
-                markers: Set.from(_markers),
-                polylines: _polylines,
-              ),
-              Positioned(
-                top: 66.0,
-                right: 16.0,
-                child: FloatingActionButton(
-                  onPressed: () {
-                    /*  Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => HomePage()),
-                );*/
-                  },
-                  child: Icon(Icons.dashboard),
-                  backgroundColor: Utils.COLOR_VIOLET,
-                ),
-              ),
-              Positioned(
-                top: 136.0,
-                right: 16.0,
-                child: FloatingActionButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => ClePage()),
-                    );
-                  },
-                  child: Icon(Icons.key),
-                  backgroundColor: Utils.COLOR_NOIR,
-                ),
-              ),    Positioned(
-                top: 206.0,
-                right: 16.0,
-                child: FloatingActionButton(
-                  onPressed: () {
-                    List<LatLng> positions = getMarkerPositions();
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => MarkerPositionPage(positions: positions),
-                      ),
-                    );
-                  },
-                  child: Icon(Icons.list),
-                  backgroundColor: Utils.COLOR_ROUGE,
-                ),
-              ),]));}}
-
-
-
-
+              );
+            },
+            child: Icon(Icons.list),
+            backgroundColor: Utils.COLOR_GREEN,
+          ),
+        )
+      ],
+    );
+  }
+}
 
 class MarkerPositionsPage extends StatefulWidget {
   late final List<LatLng> positions;
@@ -232,7 +227,7 @@ class _MarkerPositionPageState extends State<MarkerPositionPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Mes Trajets'),
-        backgroundColor: Colors.purple,
+        backgroundColor: Utils.COLOR_VIOLET,
       ),
       body: ListView.builder(
         itemCount: widget.positions.length,
@@ -321,8 +316,6 @@ class MapPage extends StatelessWidget {
   }
 }
 
-
-
 class MarkerPositionPage extends StatefulWidget {
   final List<LatLng> positions;
 
@@ -355,7 +348,8 @@ class _MarkerPositionsPageState extends State<MarkerPositionPage> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => MaPage(position: widget.positions[index]),
+                  builder: (context) =>
+                      MaPage(position: widget.positions[index]),
                 ),
               );
             },
@@ -378,12 +372,13 @@ class MaPage extends StatefulWidget {
 class _MaPageState extends State<MaPage> {
   @override
   Widget build(BuildContext context) {
-    List<LatLng> positions = [widget.position]; // Convert the single position into a list
+    List<LatLng> positions = [
+      widget.position
+    ]; // Convert the single position into a list
 
     return Scaffold(
       appBar: AppBar(
         title: Text("Details"),
-
       ),
       body: Column(
         children: [
@@ -424,25 +419,6 @@ class _MaPageState extends State<MaPage> {
   }
 }
 
-void main() {
-  runApp(MyApp());
-}
 
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Marker Positions',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: MarkerPositionPage(
-        positions: [
-          LatLng(37.7749, -122.4194), // Sample positions, replace with your own
-          LatLng(34.0522, -118.2437),
-          LatLng(41.8781, -87.6298),
-        ],
-      ),
-    );
-  }
-}
+
+
