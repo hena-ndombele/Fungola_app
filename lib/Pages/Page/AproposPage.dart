@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fungola_app/utils/ColorPage.dart';
 
 
 class AproposPage extends StatefulWidget {
@@ -13,6 +14,14 @@ class _AproposPageState extends State<AproposPage> {
   Widget build(BuildContext context) {
     return Scaffold(
 
+
+      body: Column(
+        children: [
+          Text("A propos"),
+
+          Text("version actuelle : 1.0.0+1",style: TextStyle(color: Utils.COLOR_GREY),)
+        ],
+      ),
 
     );
   }
