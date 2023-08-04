@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fungola_app/Pages/Page/AjouterVehiculePage.dart';
 import 'package:fungola_app/utils/ColorPage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 
 
@@ -13,6 +14,8 @@ class ClePage extends StatefulWidget {
 
 class _ClePageState extends State<ClePage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final DatabaseReference _databaseReference =
+  FirebaseDatabase.instance.ref('kits/kit1/lock/current');
 
   bool _isLocked = true;
  // final player = AudioCache();
@@ -20,6 +23,10 @@ class _ClePageState extends State<ClePage> {
   void _lockVehicle() {
     setState(() {
       _isLocked = true;
+      _databaseReference.set({
+        "state": _isLocked,
+      });
+      // _databaseReference.update({'state': isLocked});
     });
     //player.play('audio/app_sound.mp3');
   }
@@ -27,6 +34,10 @@ class _ClePageState extends State<ClePage> {
   void _unlockVehicle() {
     setState(() {
       _isLocked = false;
+      _databaseReference.set({
+        "state": _isLocked,
+      });
+      // _databaseReference.update({'state': isLocked});
     });
 
    // player.play('audio/app_sound.mp3');
@@ -103,7 +114,7 @@ class _ClePageState extends State<ClePage> {
                 Icon(
                   _isLocked ? Icons.lock : Icons.lock_open,
                   size: 120.0,
-                  color: Utils.COLOR_BLANC,
+                  color: _isLocked ? Colors.red : Colors.green,
                 ),
                 SizedBox(height: 30.0),
                 Text(
@@ -151,7 +162,7 @@ class _ClePageState extends State<ClePage> {
                         fontSize: 20.0,
                       ),
                     ),
-                    onPressed: _isLocked ? null : _lockVehicle,
+                    onPressed: _isLocked ? _unlockVehicle : null,
                     style: ElevatedButton.styleFrom(
                         backgroundColor: Utils.COLOR_VIOLET
                     ),
@@ -168,7 +179,8 @@ class _ClePageState extends State<ClePage> {
                         fontSize: 20.0,
                       ),
                     ),
-                    onPressed: _isLocked ? _unlockVehicle : null,
+
+                    onPressed: !_isLocked ? _lockVehicle : null,
                     style: ElevatedButton.styleFrom(
                         backgroundColor: Utils.COLOR_VIOLET
                     ),
