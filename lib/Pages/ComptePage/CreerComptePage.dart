@@ -191,7 +191,7 @@ class _CreerComptePageState extends State<CreerComptePage> {
                       obscureText: false,
                       validator: (String? value) {
                         if (value == null || value.isEmpty) {
-                          return "votre nom*";
+                          return "votre nom d'utilisateur*";
                         }
 
                         return null;
@@ -201,7 +201,7 @@ class _CreerComptePageState extends State<CreerComptePage> {
                           Icons.person,
                           color: Utils.COLOR_VIOLET,
                         ),
-                        labelText: "Nom",
+                        labelText: "Nom d'utilisateur",
                         labelStyle: TextStyle(color: Utils.COLOR_NOIR,fontSize: 12,fontFamily:' Schyler'),
 
                         enabledBorder: OutlineInputBorder(

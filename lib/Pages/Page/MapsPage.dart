@@ -38,7 +38,7 @@ class _MapsPageState extends State<MapsPage> {
 
   Future<void> _createDotIcon() async {
     final Size canvasSize =
-        Size(20, 20); // Adjust the size of the dot icon here
+    Size(20, 20); // Adjust the size of the dot icon here
 
     final ui.PictureRecorder pictureRecorder = ui.PictureRecorder();
     final Canvas canvas = Canvas(pictureRecorder);
@@ -55,18 +55,17 @@ class _MapsPageState extends State<MapsPage> {
     canvas.drawCircle(center, dotRadius, dotPaint);
 
     final ui.Image image = await pictureRecorder.endRecording().toImage(
-          canvasSize.width.toInt(),
-          canvasSize.height.toInt(),
-        );
+      canvasSize.width.toInt(),
+      canvasSize.height.toInt(),
+    );
     final ByteData? byteData =
-        await image.toByteData(format: ui.ImageByteFormat.png);
+    await image.toByteData(format: ui.ImageByteFormat.png);
     final Uint8List pngBytes = byteData!.buffer.asUint8List();
 
     setState(() {
       _dotIcon = BitmapDescriptor.fromBytes(pngBytes);
     });
   }
-
   void _loadMarkersFromFirebase() async {
     final dbRef = FirebaseDatabase.instance
         .ref()
@@ -90,12 +89,11 @@ class _MapsPageState extends State<MapsPage> {
       _updateMapMarkers();
     }
   }
-
   void _setupDbListeners() async {
     final dbRef = FirebaseDatabase.instance.ref('kits/kit1/current');
     await dbRef.onValue.listen((event) {
       Map<dynamic, dynamic> _json =
-          event.snapshot.value as Map<dynamic, dynamic>;
+      event.snapshot.value as Map<dynamic, dynamic>;
       final String positionId = event.snapshot.key as String;
       final double lat = _json['Lat'];
       final double lng = _json['Long'];
@@ -114,7 +112,6 @@ class _MapsPageState extends State<MapsPage> {
       _setPolyline();
     });
   }
-
   void _updateMapMarkers() {
     setState(() {
       _markers.clear();
@@ -131,7 +128,6 @@ class _MapsPageState extends State<MapsPage> {
       )));
     });
   }
-
   void _setPolyline() {
     _polyline = Polyline(
       polylineId: PolylineId("polyline_1"),
@@ -418,7 +414,3 @@ class _MaPageState extends State<MaPage> {
     );
   }
 }
-
-
-
-

@@ -39,7 +39,6 @@ class _ClePageState extends State<ClePage> {
   userEmail = _auth.currentUser!.email!;
   }
     return Scaffold(
-
       backgroundColor: Color(0XFFf5f3f8),
       body: Stack(
         children: [
@@ -91,8 +90,6 @@ class _ClePageState extends State<ClePage> {
               ),
             ),
           )),
-
-
           Positioned(
             top: 100,
             left: 0,
