@@ -44,6 +44,7 @@ class _ProfilPageState extends State<ProfilPage> {
       children: [
         SizedBox(height: 85,),
         InkWell(
+
           onTap: () async {},
           child: imageSelectione == null
               ? CircleAvatar(
@@ -56,6 +57,7 @@ class _ProfilPageState extends State<ProfilPage> {
             radius: 50.0,
             backgroundImage: FileImage(File(imageSelectione!.path)),
           ),
+
 
 
         ),
@@ -182,6 +184,7 @@ class _ProfilPageState extends State<ProfilPage> {
                       Navigator.push(context, MaterialPageRoute(builder: (context)=>AuthentificationPage()))
                     });
                   },
+
                 ),
 
               ]),
@@ -276,5 +279,5 @@ class _ProfilPageState extends State<ProfilPage> {
   }
 }
 
-getApplicationDocumentsDirectory() {
-}
+getApplicationDocumentsDirectory() {}
+
