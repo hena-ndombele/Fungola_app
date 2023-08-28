@@ -226,7 +226,7 @@ class _MarkerPositionPageState extends State<MarkerPositionPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Mes Trajets'),
+        title: Text('Mes Trajetss'),
         backgroundColor: Utils.COLOR_VIOLET,
       ),
       body: ListView.builder(
