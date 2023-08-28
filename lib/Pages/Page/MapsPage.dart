@@ -8,6 +8,7 @@ import 'package:fungola_app/Pages/Page/ClePage.dart';
 import 'package:fungola_app/Pages/Page/ProfilPage.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:fungola_app/utils/ColorPage.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 class MapsPage extends StatefulWidget {
   // TODO: Add constructor?
@@ -116,13 +117,17 @@ class _MapsPageState extends State<MapsPage> {
   }
 
   void _updateMapMarkers() {
-    setState(() {
+    setState(() async {
       _markers.clear();
       _markers.add(Marker(
         markerId: MarkerId('last'),
         position: _locations.last,
-        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueViolet),
-      ));
+        icon: await BitmapDescriptor.fromAssetImage(
+          ImageConfiguration(),
+        'images/car.png',
+      ),
+      )
+      );
 
       // Update Camera Position
       _mapController.moveCamera(CameraUpdate.newCameraPosition(CameraPosition(
@@ -226,7 +231,7 @@ class _MarkerPositionPageState extends State<MarkerPositionPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Mes Trajetss'),
+        title: Text('Mes Trajets'),
         backgroundColor: Utils.COLOR_VIOLET,
       ),
       body: ListView.builder(

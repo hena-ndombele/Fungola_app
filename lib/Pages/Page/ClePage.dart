@@ -1,3 +1,4 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:fungola_app/Pages/Page/AjouterVehiculePage.dart';
 import 'package:fungola_app/utils/ColorPage.dart';
@@ -15,13 +16,14 @@ class _ClePageState extends State<ClePage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   bool _isLocked = true;
- // final player = AudioCache();
+ final player = AudioPlayer();
 
   void _lockVehicle() {
     setState(() {
       _isLocked = true;
     });
-    //player.play('audio/app_sound.mp3');
+
+    player.play(AssetSource('audio/app_sound.mp3'));
   }
 
   void _unlockVehicle() {
