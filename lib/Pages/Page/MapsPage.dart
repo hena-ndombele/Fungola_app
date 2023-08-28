@@ -8,6 +8,7 @@ import 'package:fungola_app/Pages/Page/ClePage.dart';
 import 'package:fungola_app/Pages/Page/ProfilPage.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:fungola_app/utils/ColorPage.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 class MapsPage extends StatefulWidget {
   // TODO: Add constructor?
@@ -226,7 +227,7 @@ class _MarkerPositionPageState extends State<MarkerPositionPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Mes Trajetss'),
+        title: Text('Mes Trajets'),
         backgroundColor: Utils.COLOR_VIOLET,
       ),
       body: ListView.builder(
