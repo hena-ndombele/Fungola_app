@@ -315,7 +315,7 @@ class _AuthentificationPageState extends State<AuthentificationPage> {
     );
   }
   void connexion() async {
-    FocusScope.of(context).requestFocus(new FocusNode());
+    FocusScope.of(context).requestFocus(new FocusNode()); //fermer le clavier
     if (!_formKey.currentState!.validate()) {
       return;
     }

@@ -1,7 +1,13 @@
-import 'package:flutter/material.dart';
+import'package:flutter/material.dart';
 
 class ChampSaisie extends StatefulWidget {
-  const ChampSaisie({super.key});
+  String label="";
+  String hintxt="";
+
+  ChampSaisie({
+   this.label="",
+   this.hintxt=""
+});
 
   @override
   State<ChampSaisie> createState() => _ChampSaisieState();
@@ -10,6 +16,12 @@ class ChampSaisie extends StatefulWidget {
 class _ChampSaisieState extends State<ChampSaisie> {
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return TextFormField(
+      decoration: InputDecoration(
+        label: Text(widget.label),
+        hintText: widget.hintxt
+      ),
+
+    );
   }
 }

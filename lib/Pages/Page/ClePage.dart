@@ -1,8 +1,8 @@
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:fungola_app/Pages/Page/AjouterVehiculePage.dart';
 import 'package:fungola_app/utils/ColorPage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 
 
@@ -14,85 +14,94 @@ class ClePage extends StatefulWidget {
 
 class _ClePageState extends State<ClePage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final DatabaseReference _databaseReference =
+  FirebaseDatabase.instance.ref('kits/kit1/lock/current');
 
   bool _isLocked = true;
- final player = AudioPlayer();
+  // final player = AudioCache();
 
   void _lockVehicle() {
     setState(() {
       _isLocked = true;
+      _databaseReference.set({
+        "state": _isLocked,
+      });
+      // _databaseReference.update({'state': isLocked});
     });
-
-    player.play(AssetSource('audio/app_sound.mp3'));
+    //player.play('audio/app_sound.mp3');
   }
 
   void _unlockVehicle() {
     setState(() {
       _isLocked = false;
+      _databaseReference.set({
+        "state": _isLocked,
+      });
+      // _databaseReference.update({'state': isLocked});
     });
 
-   // player.play('audio/app_sound.mp3');
+    // player.play('audio/app_sound.mp3');
   }
 
   @override
   Widget build(BuildContext context) {
-  String userEmail = '';
-  if (_auth.currentUser != null) {
-  userEmail = _auth.currentUser!.email!;
-  }
+    String userEmail = '';
+    if (_auth.currentUser != null) {
+      userEmail = _auth.currentUser!.email!;
+    }
     return Scaffold(
 
       backgroundColor: Color(0XFFf5f3f8),
       body: Stack(
         children: [
           Positioned(
-          top: 0,
-          right: 0,
-          left: 0,
-          child: Container(
-            height: 450,
-            decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage("images/voiture.jpg"),
-                  fit: BoxFit.fill,
-                )),
-            child: Container(
-              padding: EdgeInsets.only(top: 60, left: 20),
-              color: Utils.COLOR_NOIR.withOpacity(.90),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-
-                  Column(
+              top: 0,
+              right: 0,
+              left: 0,
+              child: Container(
+                height: 450,
+                decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage("images/voiture.jpg"),
+                      fit: BoxFit.fill,
+                    )),
+                child: Container(
+                  padding: EdgeInsets.only(top: 60, left: 20),
+                  color: Utils.COLOR_NOIR.withOpacity(.90),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
 
-                      RichText(
-                        text: TextSpan(
-                          text: "",
-                          style: TextStyle(
-                              color: Utils.COLOR_VIOLET,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 49,
-                              fontFamily: 'Schyler'),
-                        ),
-                      ),
+                      Column(
+                        children: [
 
-                      RichText(
-                        text: TextSpan(
-                          text: "",
-                          style: TextStyle(
-                              color: Utils.COLOR_VIOLET,
-                              fontWeight: FontWeight.bold,
-                              fontFamily: 'Schyler',fontSize: 48),
-                        ),
-                      ),
+                          RichText(
+                            text: TextSpan(
+                              text: "",
+                              style: TextStyle(
+                                  color: Utils.COLOR_VIOLET,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 49,
+                                  fontFamily: 'Schyler'),
+                            ),
+                          ),
+
+                          RichText(
+                            text: TextSpan(
+                              text: "",
+                              style: TextStyle(
+                                  color: Utils.COLOR_VIOLET,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: 'Schyler',fontSize: 48),
+                            ),
+                          ),
+                        ],
+
+                      )
                     ],
-
-                  )
-                ],
-              ),
-            ),
-          )),
+                  ),
+                ),
+              )),
 
 
           Positioned(
@@ -105,7 +114,7 @@ class _ClePageState extends State<ClePage> {
                 Icon(
                   _isLocked ? Icons.lock : Icons.lock_open,
                   size: 120.0,
-                  color: Utils.COLOR_BLANC,
+                  color: _isLocked ? Colors.red : Colors.green,
                 ),
                 SizedBox(height: 30.0),
                 Text(
@@ -126,14 +135,14 @@ class _ClePageState extends State<ClePage> {
                 width: 300,
                 height: 70,
                 child: ElevatedButton(
-            onPressed: (){
-              Navigator.push(context, MaterialPageRoute(builder: (context)=>AjouterVehiculePage()));
-            },
-            child: Text("Ajouter un véhicule",style: TextStyle(fontFamily: 'Schyler',fontSize: 19),),
+                  onPressed: (){
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=>AjouterVehiculePage()));
+                  },
+                  child: Text("Ajouter un véhicule",style: TextStyle(fontFamily: 'Schyler',fontSize: 19),),
                   style: ElevatedButton.styleFrom(
                       backgroundColor: Utils.COLOR_GREEN
                   ),
-          ),
+                ),
               )),
           Positioned(
             bottom: 50,
@@ -145,7 +154,7 @@ class _ClePageState extends State<ClePage> {
                 Container(
                   height: 100,
                   child: ElevatedButton(
-                   // color: _isLocked ? Colors.grey : Colors.blue,
+                    // color: _isLocked ? Colors.grey : Colors.blue,
                     child: Text(
                       'Verrouiller',
                       style: TextStyle(
@@ -153,7 +162,7 @@ class _ClePageState extends State<ClePage> {
                         fontSize: 20.0,
                       ),
                     ),
-                    onPressed: _isLocked ? null : _lockVehicle,
+                    onPressed: _isLocked ? _unlockVehicle : null,
                     style: ElevatedButton.styleFrom(
                         backgroundColor: Utils.COLOR_VIOLET
                     ),
@@ -170,7 +179,8 @@ class _ClePageState extends State<ClePage> {
                         fontSize: 20.0,
                       ),
                     ),
-                    onPressed: _isLocked ? _unlockVehicle : null,
+
+                    onPressed: !_isLocked ? _lockVehicle : null,
                     style: ElevatedButton.styleFrom(
                         backgroundColor: Utils.COLOR_VIOLET
                     ),

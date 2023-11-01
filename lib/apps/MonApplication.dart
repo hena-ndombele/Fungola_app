@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fungola_app/Pages/DemarragePage/SplashScreen.dart';
+import 'package:fungola_app/Pages/DemarragePage/IntroScreen.dart';
 
 
 
@@ -11,7 +11,7 @@ class MonApplication extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: SplashScreen(),
+      home: IntroScreen(),
     );
   }
 }
