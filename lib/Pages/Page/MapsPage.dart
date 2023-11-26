@@ -8,7 +8,6 @@ import 'package:fungola_app/Pages/Page/ClePage.dart';
 import 'package:fungola_app/Pages/Page/ProfilPage.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:fungola_app/utils/ColorPage.dart';
-import 'package:audioplayers/audioplayers.dart';
 
 class MapsPage extends StatefulWidget {
   // TODO: Add constructor?
@@ -39,7 +38,7 @@ class _MapsPageState extends State<MapsPage> {
 
   Future<void> _createDotIcon() async {
     final Size canvasSize =
-        Size(20, 20); // Adjust the size of the dot icon here
+    Size(20, 20); // Adjust the size of the dot icon here
 
     final ui.PictureRecorder pictureRecorder = ui.PictureRecorder();
     final Canvas canvas = Canvas(pictureRecorder);
@@ -56,11 +55,11 @@ class _MapsPageState extends State<MapsPage> {
     canvas.drawCircle(center, dotRadius, dotPaint);
 
     final ui.Image image = await pictureRecorder.endRecording().toImage(
-          canvasSize.width.toInt(),
-          canvasSize.height.toInt(),
-        );
+      canvasSize.width.toInt(),
+      canvasSize.height.toInt(),
+    );
     final ByteData? byteData =
-        await image.toByteData(format: ui.ImageByteFormat.png);
+    await image.toByteData(format: ui.ImageByteFormat.png);
     final Uint8List pngBytes = byteData!.buffer.asUint8List();
 
     setState(() {
@@ -96,7 +95,7 @@ class _MapsPageState extends State<MapsPage> {
     final dbRef = FirebaseDatabase.instance.ref('kits/kit1/current');
     await dbRef.onValue.listen((event) {
       Map<dynamic, dynamic> _json =
-          event.snapshot.value as Map<dynamic, dynamic>;
+      event.snapshot.value as Map<dynamic, dynamic>;
       final String positionId = event.snapshot.key as String;
       final double lat = _json['Lat'];
       final double lng = _json['Long'];
@@ -117,17 +116,13 @@ class _MapsPageState extends State<MapsPage> {
   }
 
   void _updateMapMarkers() {
-    setState(() async {
+    setState(() {
       _markers.clear();
       _markers.add(Marker(
         markerId: MarkerId('last'),
         position: _locations.last,
-        icon: await BitmapDescriptor.fromAssetImage(
-          ImageConfiguration(),
-        'images/car.png',
-      ),
-      )
-      );
+        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueViolet),
+      ));
 
       // Update Camera Position
       _mapController.moveCamera(CameraUpdate.newCameraPosition(CameraPosition(
@@ -423,7 +418,3 @@ class _MaPageState extends State<MaPage> {
     );
   }
 }
-
-
-
-
