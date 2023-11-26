@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'apps/MonApplication.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'utils/ColorPage.dart';
 
 
 
@@ -24,7 +25,7 @@ void main() async {
 
 
   SystemChrome.setSystemUIOverlayStyle(
-    SystemUiOverlayStyle.dark.copyWith(statusBarColor: Colors.transparent, statusBarIconBrightness: Brightness.light,),
+    SystemUiOverlayStyle.dark.copyWith(statusBarColor: Utils.COLOR_TRANSPARENT, statusBarIconBrightness: Brightness.light,),
 
   );
 
