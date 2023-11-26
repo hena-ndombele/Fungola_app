@@ -127,7 +127,7 @@ class _ClePageState extends State<ClePage> {
               ],
             ),
           ),
-          Positioned(
+         /* Positioned(
 
               bottom: 200,
               child: Container(
@@ -143,7 +143,7 @@ class _ClePageState extends State<ClePage> {
                       backgroundColor: Utils.COLOR_GREEN
                   ),
                 ),
-              )),
+              )),*/
           Positioned(
             bottom: 50,
             left: 30,
