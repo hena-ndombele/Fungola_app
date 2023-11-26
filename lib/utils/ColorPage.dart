@@ -16,6 +16,7 @@ class Utils{
   static const COLOR_ROUGE=Colors.red;
   static const COLOR_VIOLET_CLAIRE=Color(0xFFffb7ff);
   static const COLOR_GREEN=Colors.green;
+  static const COLOR_TRANSPARENT=Colors.transparent;
 
 
 
